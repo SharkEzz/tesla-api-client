@@ -1,3 +1,4 @@
+import WebSocket from 'ws';
 import Auth from './auth.js';
 import { FETCH_HEADERS, TeslaApiEndpoints } from './constants.js';
 
@@ -12,6 +13,8 @@ import ReleaseNotesResponseSchema from './schemas/ReleaseNotesResponseSchema.js'
 import GetVehicleResponseSchema from './schemas/GetVehicleResponseSchema.js';
 
 export default class Client {
+  private streamingWs: WebSocket | null = null;
+
   public constructor(private readonly authenticator: Auth) {}
 
   /**
@@ -82,6 +85,42 @@ export default class Client {
        */
       stopCharge: () => this.post(`/api/1/vehicles/${vehicleId}/command/charge_stop`),
     };
+  }
+
+  /**
+   * Start streaming data from the vehicle, if the vehicle is online.
+   */
+  public async startStreaming(
+    id: number,
+    onMessage: (data: unknown) => void,
+    onConnected: () => void,
+    onDisconnected: () => void,
+    onError: (error: Error) => void,
+  ) {
+    const oAuthMessage = {
+      msg_type: 'data:subscribe_oauth',
+      token: await this.authenticator.getAccessToken(),
+      value:
+        'speed,odometer,soc,elevation,est_heading,est_lat,est_lng,power,shift_state,range,est_range,heading,locked',
+      tag: id,
+    };
+
+    this.streamingWs = new WebSocket('wss://streaming.vn.teslamotors.com/streaming/');
+    this.streamingWs.on('message', onMessage);
+    this.streamingWs.on('open', () => {
+      this.streamingWs?.send(JSON.stringify(oAuthMessage), onConnected);
+    });
+    this.streamingWs.on('close', onDisconnected);
+    this.streamingWs.on('error', onError);
+  }
+
+  /**
+   * Stop streaming data from the vehicle.
+   * This function will remove all the event listeners associated with the WebSocket, then close it.
+   */
+  public stopStreaming() {
+    this.streamingWs?.removeAllListeners().close();
+    this.streamingWs = null;
   }
 
   private async get<T>(url: string, schema: Zod.Schema<T>): Promise<T | Error> {
