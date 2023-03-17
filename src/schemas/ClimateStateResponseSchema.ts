@@ -1,0 +1,40 @@
+import { z } from 'zod';
+
+const ClimateStateResponseSchema = z.object({
+  response: z.object({
+    allow_cabin_overheat_protection: z.boolean(),
+    auto_seat_climate_left: z.boolean(),
+    auto_seat_climate_right: z.boolean(),
+    battery_heater: z.boolean(),
+    battery_heater_no_power: z.boolean(),
+    cabin_overheat_protection: z.string(),
+    cabin_overheat_protection_actively_cooling: z.boolean(),
+    climate_keeper_mode: z.string(),
+    cop_activation_temperature: z.string(),
+    defrost_mode: z.number(),
+    driver_temp_setting: z.number(),
+    fan_status: z.number(),
+    hvac_auto_request: z.string(),
+    inside_temp: z.number(),
+    is_auto_conditioning_on: z.boolean(),
+    is_climate_on: z.boolean(),
+    is_front_defroster_on: z.boolean(),
+    is_preconditioning: z.boolean(),
+    is_rear_defroster_on: z.boolean(),
+    left_temp_direction: z.number(),
+    max_avail_temp: z.number(),
+    min_avail_temp: z.number(),
+    outside_temp: z.number(),
+    passenger_temp_setting: z.number(),
+    remote_heater_control_enabled: z.boolean(),
+    right_temp_direction: z.number(),
+    seat_heater_left: z.number(),
+    seat_heater_right: z.number(),
+    side_mirror_heaters: z.boolean(),
+    supports_fan_only_cabin_overheat_protection: z.boolean(),
+    timestamp: z.number(),
+    wiper_blade_heater: z.boolean(),
+  }),
+});
+
+export default ClimateStateResponseSchema;

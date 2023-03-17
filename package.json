@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "main": "build/src/index.js",
+  "main": "build/index.js",
+  "module": "build/index.js",
+  "types": "build/index.d.ts",
   "private": true,
   "scripts": {
     "start": "node .",
@@ -15,13 +17,17 @@
     "node": ">=18.0.0"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "SharkEzz <icraft640@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "jwt-decode": "3.1.2",
+    "zod": "3.21.4"
+  },
   "devDependencies": {
-    "@types/node": "18.14.6",
-    "@typescript-eslint/eslint-plugin": "5.54.1",
-    "@typescript-eslint/parser": "5.54.1",
-    "eslint": "8.35.0",
+    "@types/node": "18.15.3",
+    "@typescript-eslint/eslint-plugin": "5.55.0",
+    "@typescript-eslint/parser": "5.55.0",
+    "eslint": "8.36.0",
     "eslint-config-airbnb": "19.0.4",
     "eslint-config-airbnb-typescript": "17.0.0",
     "eslint-config-prettier": "8.7.0",
@@ -31,14 +37,14 @@
     "eslint-plugin-react": "7.32.2",
     "eslint-plugin-react-hooks": "4.6.0",
     "prettier": "2.8.4",
-    "typescript": "4.9.5"
+    "typescript": "5.0.2"
   },
   "prettier": {
     "singleQuote": true,
     "endOfLine": "lf",
     "semi": true,
     "trailingComma": "all",
-    "printWidth": 100,
+    "printWidth": 120,
     "overrides": [
       {
         "files": [

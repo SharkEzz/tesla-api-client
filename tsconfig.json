@@ -20,7 +20,7 @@
         "noImplicitThis": true,
         "strictNullChecks": true,
         "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
+        "allowSyntheticDefaultImports": true
     },
     "include": [
         "src/**/*"
