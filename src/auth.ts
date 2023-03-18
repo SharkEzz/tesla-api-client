@@ -7,7 +7,7 @@ export default class Authenticator {
     const expiration = jwtDecode.default<{ exp: number }>(accessToken).exp * 1000;
 
     // Refresh the token if the expiration is in less than an hour
-    if (Math.abs(Date.now() - expiration) <= 3600 * 1000) {
+    if (Math.abs(Date.now() - expiration) <= 3600 * 1000 || expiration <= Date.now()) {
       const result = await Authenticator.refreshAccessToken(refreshToken);
       if (result instanceof Error) return result;
       return result.access_token;
