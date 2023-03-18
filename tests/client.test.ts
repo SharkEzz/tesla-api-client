@@ -1,4 +1,3 @@
-import Authenticator from '../src/auth.js';
 import Client from '../src/client.js';
 import {
   GetVehiclesResponse,
@@ -14,20 +13,15 @@ import {
 
 const FAKE_TOKEN =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im5ZdVZJWTJTN3gxVHRYM01KMC1QMDJad3pBQSJ9.eyJpc3MiOiJodHRwczovL2F1dGgudGVzbGEuY29tL29hdXRoMi92MyIsImF1ZCI6WyJodHRwczovL293bmVyLWFwaS50ZXNsYW1vdG9ycy5jb20vIiwiaHR0cHM6Ly9hdXRoLnRlc2xhLmNvbS9vYXV0aDIvdjMvdXNlcmluZm8iXSwiYXpwIjoib3duZXJhcGkiLCJzdWIiOiIyYTExZDAwZi03Yjk1LTRhNzMtOTg0Ni02Mzk0MWJhYzQyYzAiLCJzY3AiOlsib3BlbmlkIiwiZW1haWwiLCJvZmZsaW5lX2FjY2VzcyJdLCJhbXIiOltdLCJleHAiOjE2NzkxMTEyMDAsImlhdCI6MTY3OTA4MjQwMH0.qqCBXDoAxj9BS5lF2UubBXwgsRR9UBIt6XgX20f_Nhg';
-const FAKE_REFRESH_TOKEN =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im5ZdVZJWTJTN3gxVHRYM01KMC1QMDJad3pBQSJ9.eyJpc3MiOiJodHRwczovL2F1dGgudGVzbGEuY29tL29hdXRoMi92MyIsImF1ZCI6Imh0dHBzOi8vYXV0aC50ZXNsYS5jb20vb2F1dGgyL3YzL3Rva2VuIiwiaWF0IjoxNjc2NzMyNDA0LCJzY3AiOlsib3BlbmlkIiwib2ZmbGluZV9hY2Nlc3MiXSwiZGF0YSI6eyJ2IjoiMSIsImF1ZCI6Imh0dHBzOi8vb3duZXItYXBpLnRlc2xhbW90b3JzLmNvbS8iLCJzdWIiOiIyYTExZDAwZi03Yjk1LTRhNzMtOTg0Ni02Mzk0MWJhYzQyYzAiLCJzY3AiOlsib3BlbmlkIiwiZW1haWwiLCJvZmZsaW5lX2FjY2VzcyJdLCJhenAiOiJvd25lcmFwaSIsImFtciI6WyJwd2QiLCJtZmEiLCJvdHAiXSwiYXV0aF90aW1lIjoxNjc2NzMyNDA0fX0.2SaS0oUl2enja2VgWcstwWgp6iqHvXlEZ_CSxGCXl5k';
 
 describe('client', () => {
-  const auth = new Authenticator(FAKE_TOKEN, FAKE_REFRESH_TOKEN);
-  const client = new Client(auth);
-
   it('should return an error if request failed', async () => {
     global.fetch = jest.fn().mockImplementation(() => ({
       ok: false,
       json: () => Promise.resolve(GetVehiclesResponse),
     }));
 
-    const vehicles = (await client.getVehicles()) as Error;
+    const vehicles = (await Client.vehicles(FAKE_TOKEN)) as Error;
     expect(vehicles).toBeInstanceOf(Error);
     expect(vehicles.message).toBe('Failed to get vehicle data');
   });
@@ -38,7 +32,7 @@ describe('client', () => {
       json: () => Promise.resolve({}),
     }));
 
-    const vehicles = (await client.getVehicles()) as Error;
+    const vehicles = (await Client.vehicles(FAKE_TOKEN)) as Error;
     expect(vehicles).toBeInstanceOf(Error);
     expect(vehicles.message).toBe('Failed to validate schema');
   });
@@ -49,7 +43,7 @@ describe('client', () => {
       json: () => Promise.resolve(GetVehiclesResponse),
     }));
 
-    const vehicles = await client.getVehicles();
+    const vehicles = await Client.vehicles(FAKE_TOKEN);
     expect(vehicles).not.toBeInstanceOf(Error);
   });
 
@@ -59,7 +53,7 @@ describe('client', () => {
       json: () => Promise.resolve(GetVehicleResponse),
     }));
 
-    const vehicles = await client.getVehicle(1234567890123456);
+    const vehicles = await Client.vehicle(1234567890123456, FAKE_TOKEN);
     expect(vehicles).not.toBeInstanceOf(Error);
   });
 
@@ -69,7 +63,7 @@ describe('client', () => {
       json: () => Promise.resolve(ChargeStatResponse),
     }));
 
-    const vehicles = await client.state(1234567890123456).charge();
+    const vehicles = await Client.state(1234567890123456, FAKE_TOKEN).charge();
     expect(vehicles).not.toBeInstanceOf(Error);
   });
 
@@ -79,7 +73,7 @@ describe('client', () => {
       json: () => Promise.resolve(ClimateStateResponse),
     }));
 
-    const vehicles = await client.state(1234567890123456).climate();
+    const vehicles = await Client.state(1234567890123456, FAKE_TOKEN).climate();
     expect(vehicles).not.toBeInstanceOf(Error);
   });
 
@@ -89,7 +83,7 @@ describe('client', () => {
       json: () => Promise.resolve(DriveStateResponse),
     }));
 
-    const vehicles = await client.state(1234567890123456).drive();
+    const vehicles = await Client.state(1234567890123456, FAKE_TOKEN).drive();
     expect(vehicles).not.toBeInstanceOf(Error);
   });
 
@@ -99,7 +93,7 @@ describe('client', () => {
       json: () => Promise.resolve(GuiSettingsResponse),
     }));
 
-    const vehicles = await client.state(1234567890123456).gui();
+    const vehicles = await Client.state(1234567890123456, FAKE_TOKEN).gui();
     expect(vehicles).not.toBeInstanceOf(Error);
   });
 
@@ -109,7 +103,7 @@ describe('client', () => {
       json: () => Promise.resolve(VehicleStateResponse),
     }));
 
-    const vehicles = await client.state(1234567890123456).state();
+    const vehicles = await Client.state(1234567890123456, FAKE_TOKEN).state();
     expect(vehicles).not.toBeInstanceOf(Error);
   });
 
@@ -119,7 +113,7 @@ describe('client', () => {
       json: () => Promise.resolve(VehicleConfigResponse),
     }));
 
-    const vehicles = await client.state(1234567890123456).config();
+    const vehicles = await Client.state(1234567890123456, FAKE_TOKEN).config();
     expect(vehicles).not.toBeInstanceOf(Error);
   });
 
@@ -129,7 +123,7 @@ describe('client', () => {
       json: () => Promise.resolve(ReleaseNotesResponse),
     }));
 
-    const vehicles = await client.state(1234567890123456).releaseNotes();
+    const vehicles = await Client.state(1234567890123456, FAKE_TOKEN).releaseNotes();
     expect(vehicles).not.toBeInstanceOf(Error);
   });
 
@@ -139,7 +133,7 @@ describe('client', () => {
       json: () => Promise.resolve({}),
     }));
 
-    const vehicles = (await client.commands(1234567890123456).wakeUp()) as Error;
+    const vehicles = (await Client.commands(1234567890123456, FAKE_TOKEN).wakeUp()) as Error;
     expect(vehicles).toBeInstanceOf(Error);
     expect(vehicles.message).toBe('Failed to post');
   });
@@ -150,7 +144,7 @@ describe('client', () => {
       json: () => Promise.resolve({}),
     }));
 
-    const vehicles = (await client.commands(1234567890123456).wakeUp()) as Error;
+    const vehicles = (await Client.commands(1234567890123456, FAKE_TOKEN).wakeUp()) as Error;
     expect(vehicles).toBeInstanceOf(Error);
     expect(vehicles.message).toBe('Failed to parse post response schema');
   });
@@ -161,7 +155,7 @@ describe('client', () => {
       json: () => Promise.resolve(GetVehicleResponse),
     }));
 
-    const vehicles = await client.commands(1234567890123456).wakeUp();
+    const vehicles = await Client.commands(1234567890123456, FAKE_TOKEN).wakeUp();
     expect(vehicles).not.toBeInstanceOf(Error);
   });
 
@@ -171,7 +165,7 @@ describe('client', () => {
       json: () => Promise.resolve({}),
     }));
 
-    const vehicles = await client.commands(1234567890123456).startCharge();
+    const vehicles = await Client.commands(1234567890123456, FAKE_TOKEN).startCharge();
     expect(vehicles).not.toBeInstanceOf(Error);
   });
 
@@ -181,7 +175,7 @@ describe('client', () => {
       json: () => Promise.resolve({}),
     }));
 
-    const vehicles = await client.commands(1234567890123456).stopCharge();
+    const vehicles = await Client.commands(1234567890123456, FAKE_TOKEN).stopCharge();
     expect(vehicles).not.toBeInstanceOf(Error);
   });
 });
