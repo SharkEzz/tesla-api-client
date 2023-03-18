@@ -6,4 +6,5 @@ const RefreshTokenResponseSchema = z.object({
   expires_in: z.number(),
 });
 
+export type RefreshTokenResponseType = z.infer<typeof RefreshTokenResponseSchema>;
 export default RefreshTokenResponseSchema;

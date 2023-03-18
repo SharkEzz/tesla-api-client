@@ -9,6 +9,7 @@ import {
   VehicleStateResponse,
   VehicleConfigResponse,
   ReleaseNotesResponse,
+  VehicleDataResponse,
 } from './data.js';
 
 const FAKE_TOKEN =
@@ -35,6 +36,16 @@ describe('client', () => {
     const vehicles = (await Client.vehicles(FAKE_TOKEN)) as Error;
     expect(vehicles).toBeInstanceOf(Error);
     expect(vehicles.message).toBe('Failed to validate schema');
+  });
+
+  it('should get the vehicle data', async () => {
+    global.fetch = jest.fn().mockImplementation(() => ({
+      ok: true,
+      json: () => Promise.resolve(VehicleDataResponse),
+    }));
+
+    const vehicles = await Client.state(1234567890123456, FAKE_TOKEN).data();
+    expect(vehicles).not.toBeInstanceOf(Error);
   });
 
   it('should get all the vehicles', async () => {

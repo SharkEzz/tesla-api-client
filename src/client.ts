@@ -10,6 +10,7 @@ import VehicleStateResponseSchema from './schemas/VehicleStateResponseSchema.js'
 import VehicleConfigResponseSchema from './schemas/VehicleConfigResponseSchema.js';
 import ReleaseNotesResponseSchema from './schemas/ReleaseNotesResponseSchema.js';
 import GetVehicleResponseSchema from './schemas/GetVehicleResponseSchema.js';
+import VehicleDataResponseSchema from './schemas/VehicleDataResponseSchema.js';
 
 export default class Client {
   /**
@@ -33,6 +34,7 @@ export default class Client {
    */
   public static state(vehicleId: number, token: string) {
     return {
+      data: () => Client.get(`api/1/vehicles/${vehicleId}/vehicle_data`, VehicleDataResponseSchema, token),
       /**
        * @returns The charge state of the vehicle.
        */

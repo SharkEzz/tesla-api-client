@@ -1,12 +1,6 @@
 import jwtDecode from 'jwt-decode';
 import { FETCH_HEADERS, TeslaApiEndpoints } from './constants.js';
-import RefreshTokenResponseSchema from './schemas/RefreshTokenResponseSchema.js';
-
-interface RefreshTokenResponse {
-  access_token: string;
-  expires_in: number;
-  refresh_token: string;
-}
+import RefreshTokenResponseSchema, { type RefreshTokenResponseType } from './schemas/RefreshTokenResponseSchema.js';
 
 export default class Authenticator {
   public static async validateAccessToken(accessToken: string, refreshToken: string): Promise<string | Error> {
@@ -22,7 +16,7 @@ export default class Authenticator {
     return accessToken;
   }
 
-  private static async refreshAccessToken(refreshToken: string): Promise<Error | RefreshTokenResponse> {
+  private static async refreshAccessToken(refreshToken: string): Promise<Error | RefreshTokenResponseType> {
     const requestBody = {
       grant_type: 'refresh_token',
       client_id: 'ownerapi',
