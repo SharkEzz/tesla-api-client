@@ -12,7 +12,8 @@
         "ecmaVersion": 2022
     },
     "plugins": [
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "jest"
     ],
     "extends": [
         "eslint:recommended",
@@ -20,7 +21,9 @@
         "airbnb-typescript/base",
         "plugin:@typescript-eslint/recommended",
         "plugin:@typescript-eslint/recommended-requiring-type-checking",
-        "plugin:prettier/recommended"
+        "plugin:prettier/recommended",
+        "plugin:jest/recommended",
+        "plugin:jest/style"
     ],
     "rules": {
         "no-console": "off"

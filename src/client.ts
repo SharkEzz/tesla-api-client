@@ -1,4 +1,5 @@
 import WebSocket from 'ws';
+import Zod from 'zod';
 import Auth from './auth.js';
 import { FETCH_HEADERS, TeslaApiEndpoints } from './constants.js';
 
@@ -141,7 +142,7 @@ export default class Client {
       if (parsed.success) {
         return parsed.data;
       }
-      return new Error(parsed.error.toString());
+      return new Error('Failed to validate schema');
     } catch (error) {
       return new Error(`Failed to get: ${url}`);
     }
@@ -173,7 +174,7 @@ export default class Client {
       if (parsed.success) {
         return parsed.data;
       }
-      return new Error(parsed.error.toString());
+      return new Error('Failed to parse post response schema');
     } catch (error) {
       return new Error(`Failed to post: ${url}`);
     }

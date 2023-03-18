@@ -7,7 +7,7 @@
             "ES2022",
             "DOM"
         ],
-        "rootDir": "./src",
+        "rootDir": ".",
         "outDir": "build",
         "importHelpers": true,
         "alwaysStrict": true,

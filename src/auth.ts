@@ -12,7 +12,7 @@ export default class Authenticator {
 
   public async getAccessToken(): Promise<string | Error> {
     // Refresh the token if the expiration is in less than an hour
-    if (this.tokenExp <= Date.now() - 3600 * 1000) {
+    if (Math.abs(Date.now() - this.tokenExp) <= 3600 * 1000) {
       const error = await this.refreshAccessToken();
       if (error instanceof Error) return error;
     }
@@ -42,7 +42,7 @@ export default class Authenticator {
 
     const validatedRes = RefreshTokenResponseSchema.safeParse(await res.json());
     if (!validatedRes.success) {
-      return new Error(validatedRes.error.message);
+      return new Error('Failed to parse refresh token response');
     }
 
     this.accessToken = validatedRes.data.access_token;
