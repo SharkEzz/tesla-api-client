@@ -10,14 +10,18 @@
   "scripts": {
     "start": "node .",
     "watch": "tsc --watch -p tsconfig.json",
-    "build": "tsc -p tsconfig.json",
-    "build:release": "tsc -p tsconfig.release.json",
+    "build": "rm -rf build && tsc -p tsconfig.json",
+    "build:release": "rm -rf build && tsc -p tsconfig.release.json",
     "test": "jest"
   },
   "engines": {
     "node": ">=18.0.0"
   },
-  "keywords": [],
+  "keywords": [
+    "tesla",
+    "api",
+    "client"
+  ],
   "author": "SharkEzz <icraft640@gmail.com>",
   "license": "MIT",
   "dependencies": {
