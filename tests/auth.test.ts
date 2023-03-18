@@ -25,9 +25,7 @@ describe('auth', () => {
   it('should be able to authenticate with valid credentials and if the token is not expired', async () => {
     global.Date.now = jest.fn().mockReturnValue(1679101200000);
 
-    const auth = new Authenticator(FAKE_TOKEN, FAKE_REFRESH_TOKEN);
-    expect(fetch).not.toHaveBeenCalled();
-    const result = await auth.getAccessToken();
+    const result = await Authenticator.validateAccessToken(FAKE_TOKEN, FAKE_REFRESH_TOKEN);
     expect(Date.now).toHaveBeenCalled();
     expect(result).toBe(FAKE_TOKEN);
     expect(fetch).not.toHaveBeenCalled();
@@ -36,9 +34,7 @@ describe('auth', () => {
   it('should be able to authenticate with valid credentials if the token is expired', async () => {
     global.Date.now = jest.fn().mockReturnValue(TOKEN_EXPIRATION);
 
-    const auth = new Authenticator(FAKE_TOKEN, FAKE_REFRESH_TOKEN);
-    expect(fetch).not.toHaveBeenCalled();
-    const result = await auth.getAccessToken();
+    const result = await Authenticator.validateAccessToken(FAKE_TOKEN, FAKE_REFRESH_TOKEN);
     expect(Date.now).toHaveBeenCalled();
     expect(result).toBe('');
     expect(fetch).toHaveBeenCalled();
@@ -59,9 +55,7 @@ describe('auth', () => {
       });
     });
 
-    const auth = new Authenticator(FAKE_TOKEN, FAKE_REFRESH_TOKEN);
-    expect(fetch).not.toHaveBeenCalled();
-    const result = (await auth.getAccessToken()) as Error;
+    const result = (await Authenticator.validateAccessToken(FAKE_TOKEN, FAKE_REFRESH_TOKEN)) as Error;
     expect(Date.now).toHaveBeenCalled();
     expect(fetch).toHaveBeenCalled();
     expect(result).toBeInstanceOf(Error);
@@ -82,9 +76,7 @@ describe('auth', () => {
       });
     });
 
-    const auth = new Authenticator(FAKE_TOKEN, FAKE_REFRESH_TOKEN);
-    expect(fetch).not.toHaveBeenCalled();
-    const result = (await auth.getAccessToken()) as Error;
+    const result = (await Authenticator.validateAccessToken(FAKE_TOKEN, FAKE_REFRESH_TOKEN)) as Error;
     expect(Date.now).toHaveBeenCalled();
     expect(fetch).toHaveBeenCalled();
     expect(result).toBeInstanceOf(Error);
