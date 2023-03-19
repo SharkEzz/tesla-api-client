@@ -1,4 +1,4 @@
-import Client from '../src/client.js';
+import { Client } from '../src/index.js';
 import {
   GetVehiclesResponse,
   GetVehicleResponse,
@@ -22,9 +22,11 @@ describe('client', () => {
       json: () => Promise.resolve(GetVehiclesResponse),
     }));
 
-    const vehicles = (await Client.vehicles(FAKE_TOKEN)) as Error;
-    expect(vehicles).toBeInstanceOf(Error);
-    expect(vehicles.message).toBe('Failed to get vehicle data');
+    const vehicles = await Client.vehicles(FAKE_TOKEN);
+    expect(vehicles.success).toBe(false);
+    expect(vehicles.data).toBeUndefined();
+    expect(vehicles.error).toBeInstanceOf(Error);
+    expect(vehicles.error?.message).toBe('Failed to get vehicle data');
   });
 
   it('should return an error if parsing schema failed', async () => {
@@ -33,9 +35,10 @@ describe('client', () => {
       json: () => Promise.resolve({}),
     }));
 
-    const vehicles = (await Client.vehicles(FAKE_TOKEN)) as Error;
-    expect(vehicles).toBeInstanceOf(Error);
-    expect(vehicles.message).toBe('Failed to validate schema');
+    const vehicles = await Client.vehicles(FAKE_TOKEN);
+    expect(vehicles.success).toBe(false);
+    expect(vehicles.data).toBeUndefined();
+    expect(vehicles.error?.message).toBe('Failed to validate schema');
   });
 
   it('should get the vehicle data', async () => {
@@ -44,8 +47,8 @@ describe('client', () => {
       json: () => Promise.resolve(VehicleDataResponse),
     }));
 
-    const vehicles = await Client.state(1234567890123456, FAKE_TOKEN).data();
-    expect(vehicles).not.toBeInstanceOf(Error);
+    const vehicles = await Client.vehicleData('1234567890123456', FAKE_TOKEN);
+    expect(vehicles.success).toBe(true);
   });
 
   it('should get all the vehicles', async () => {
@@ -55,7 +58,7 @@ describe('client', () => {
     }));
 
     const vehicles = await Client.vehicles(FAKE_TOKEN);
-    expect(vehicles).not.toBeInstanceOf(Error);
+    expect(vehicles.success).toBe(true);
   });
 
   it('should get a vehicle', async () => {
@@ -64,8 +67,8 @@ describe('client', () => {
       json: () => Promise.resolve(GetVehicleResponse),
     }));
 
-    const vehicles = await Client.vehicle(1234567890123456, FAKE_TOKEN);
-    expect(vehicles).not.toBeInstanceOf(Error);
+    const vehicles = await Client.vehicle('1234567890123456', FAKE_TOKEN);
+    expect(vehicles.success).toBe(true);
   });
 
   it('should get a vehicle charge state', async () => {
@@ -74,8 +77,8 @@ describe('client', () => {
       json: () => Promise.resolve(ChargeStatResponse),
     }));
 
-    const vehicles = await Client.state(1234567890123456, FAKE_TOKEN).charge();
-    expect(vehicles).not.toBeInstanceOf(Error);
+    const vehicles = await Client.charge('1234567890123456', FAKE_TOKEN);
+    expect(vehicles.success).toBe(true);
   });
 
   it('should get a vehicle climate state', async () => {
@@ -84,8 +87,8 @@ describe('client', () => {
       json: () => Promise.resolve(ClimateStateResponse),
     }));
 
-    const vehicles = await Client.state(1234567890123456, FAKE_TOKEN).climate();
-    expect(vehicles).not.toBeInstanceOf(Error);
+    const vehicles = await Client.climate('1234567890123456', FAKE_TOKEN);
+    expect(vehicles.success).toBe(true);
   });
 
   it('should get a vehicle drive state', async () => {
@@ -94,8 +97,8 @@ describe('client', () => {
       json: () => Promise.resolve(DriveStateResponse),
     }));
 
-    const vehicles = await Client.state(1234567890123456, FAKE_TOKEN).drive();
-    expect(vehicles).not.toBeInstanceOf(Error);
+    const vehicles = await Client.drive('1234567890123456', FAKE_TOKEN);
+    expect(vehicles.success).toBe(true);
   });
 
   it('should get a vehicle gui configuration', async () => {
@@ -104,8 +107,8 @@ describe('client', () => {
       json: () => Promise.resolve(GuiSettingsResponse),
     }));
 
-    const vehicles = await Client.state(1234567890123456, FAKE_TOKEN).gui();
-    expect(vehicles).not.toBeInstanceOf(Error);
+    const vehicles = await Client.gui('1234567890123456', FAKE_TOKEN);
+    expect(vehicles.success).toBe(true);
   });
 
   it('should get a vehicle state', async () => {
@@ -114,8 +117,8 @@ describe('client', () => {
       json: () => Promise.resolve(VehicleStateResponse),
     }));
 
-    const vehicles = await Client.state(1234567890123456, FAKE_TOKEN).state();
-    expect(vehicles).not.toBeInstanceOf(Error);
+    const vehicles = await Client.state('1234567890123456', FAKE_TOKEN);
+    expect(vehicles.success).toBe(true);
   });
 
   it('should get a vehicle config', async () => {
@@ -124,8 +127,8 @@ describe('client', () => {
       json: () => Promise.resolve(VehicleConfigResponse),
     }));
 
-    const vehicles = await Client.state(1234567890123456, FAKE_TOKEN).config();
-    expect(vehicles).not.toBeInstanceOf(Error);
+    const vehicles = await Client.config('1234567890123456', FAKE_TOKEN);
+    expect(vehicles.success).toBe(true);
   });
 
   it('should get a vehicle drive releaseNotes', async () => {
@@ -134,8 +137,8 @@ describe('client', () => {
       json: () => Promise.resolve(ReleaseNotesResponse),
     }));
 
-    const vehicles = await Client.state(1234567890123456, FAKE_TOKEN).releaseNotes();
-    expect(vehicles).not.toBeInstanceOf(Error);
+    const vehicles = await Client.releaseNotes('1234567890123456', FAKE_TOKEN);
+    expect(vehicles.success).toBe(true);
   });
 
   it('should return an error if failed to post a command', async () => {
@@ -144,9 +147,10 @@ describe('client', () => {
       json: () => Promise.resolve({}),
     }));
 
-    const vehicles = (await Client.commands(1234567890123456, FAKE_TOKEN).wakeUp()) as Error;
-    expect(vehicles).toBeInstanceOf(Error);
-    expect(vehicles.message).toBe('Failed to post');
+    const vehicles = await Client.wakeUp('1234567890123456', FAKE_TOKEN);
+    expect(vehicles.success).toBe(false);
+    expect(vehicles.data).toBeUndefined();
+    expect(vehicles.error?.message).toBe('Failed to post');
   });
 
   it('should return an error if cannot parse response schema', async () => {
@@ -155,9 +159,10 @@ describe('client', () => {
       json: () => Promise.resolve({}),
     }));
 
-    const vehicles = (await Client.commands(1234567890123456, FAKE_TOKEN).wakeUp()) as Error;
-    expect(vehicles).toBeInstanceOf(Error);
-    expect(vehicles.message).toBe('Failed to parse post response schema');
+    const vehicles = await Client.wakeUp('1234567890123456', FAKE_TOKEN);
+    expect(vehicles.success).toBe(false);
+    expect(vehicles.data).toBeUndefined();
+    expect(vehicles.error?.message).toBe('Failed to parse post response schema');
   });
 
   it('should post the vehicle wakeup command', async () => {
@@ -166,8 +171,8 @@ describe('client', () => {
       json: () => Promise.resolve(GetVehicleResponse),
     }));
 
-    const vehicles = await Client.commands(1234567890123456, FAKE_TOKEN).wakeUp();
-    expect(vehicles).not.toBeInstanceOf(Error);
+    const vehicles = await Client.wakeUp('1234567890123456', FAKE_TOKEN);
+    expect(vehicles.success).toBe(true);
   });
 
   it('should post the start charge command', async () => {
@@ -176,8 +181,8 @@ describe('client', () => {
       json: () => Promise.resolve({}),
     }));
 
-    const vehicles = await Client.commands(1234567890123456, FAKE_TOKEN).startCharge();
-    expect(vehicles).not.toBeInstanceOf(Error);
+    const vehicles = await Client.startCharge('1234567890123456', FAKE_TOKEN);
+    expect(vehicles.success).toBe(true);
   });
 
   it('should post the stop charge command', async () => {
@@ -186,7 +191,7 @@ describe('client', () => {
       json: () => Promise.resolve({}),
     }));
 
-    const vehicles = await Client.commands(1234567890123456, FAKE_TOKEN).stopCharge();
-    expect(vehicles).not.toBeInstanceOf(Error);
+    const vehicles = await Client.stopCharge('1234567890123456', FAKE_TOKEN);
+    expect(vehicles.success).toBe(true);
   });
 });
