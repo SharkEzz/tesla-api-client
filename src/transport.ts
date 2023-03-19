@@ -14,7 +14,7 @@ interface ErrorReturn<T> extends Return<T> {
   success: false;
   error: Error;
 }
-type Erroreable<T> = SuccessReturn<T> | ErrorReturn<T>;
+export type Erroreable<T> = SuccessReturn<T> | ErrorReturn<T>;
 
 async function get<T>(url: string, schema: Zod.Schema<T>, token: string): Promise<Erroreable<T>> {
   try {
